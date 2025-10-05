@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>bazmar</groupId>
-  <artifactId>lastWarAutoFl</artifactId>
-  <name>lastWarAutoFl</name>
-  <version>2.0.1</version>
-  <url>https://github.com/bazmar59/lastWarAutoFL</url>
+  <groupId>com.km</groupId>
+  <artifactId>lastWarVpBot</artifactId>
+  <name>lastWarVpBot</name>
+  <version>0.0.1-SNAPSHOT</version>
+  <url>https://github.com/knownMemories/LastWarVPBot</url>
   <build>
     <plugins>
       <plugin>
@@ -71,6 +71,7 @@
   </dependencies>
   <properties>
     <maven.compiler.target>17</maven.compiler.target>
+    <slf4j.version>1.7.32</slf4j.version>
     <maven.compiler.source>17</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>17</javafx.version>

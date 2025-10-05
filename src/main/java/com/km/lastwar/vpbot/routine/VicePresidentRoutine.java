@@ -1,16 +1,11 @@
-package com.km.lastwar.vpbot;
+package com.km.lastwar.vpbot.routine;
 
-import ch.qos.logback.classic.Logger;
-import com.km.lastwar.vpbot.data.BotType;
-import com.km.lastwar.vpbot.data.Stats;
 import com.km.lastwar.vpbot.exception.FlListNotFound;
-import com.km.lastwar.vpbot.io.Frame;
-import com.km.lastwar.vpbot.io.Mouse;
-import com.km.lastwar.vpbot.io.Screen;
 import com.km.lastwar.vpbot.utils.GameWindowManager;
 import com.km.lastwar.vpbot.utils.IconPositionDetector;
-import com.km.lastwar.vpbot.utils.Utils;
+import com.km.lastwar.vpbot.utils.ThreadUtil;
 import com.sun.jna.platform.win32.WinDef;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
@@ -18,29 +13,53 @@ import java.awt.*;
 import static com.km.lastwar.vpbot.data.Constants.DEBUG_SCREEN_PATH;
 import static com.km.lastwar.vpbot.utils.IconPositionDetector.isIconOnScreenshot;
 
-public class FirstLady {
+public class VicePresidentRoutine {
 
-    private static final Logger logger = (Logger) LoggerFactory.getLogger("FL");
+    private static final Logger logger = LoggerFactory.getLogger(VicePresidentRoutine.class);
 
-    private Mouse mouseFl;
-    private Screen screenFl;
-
-    public FirstLady(Mouse mouseFl, Screen screenFl) {
-        this.mouseFl = mouseFl;
-        this.screenFl = screenFl;
-    }
-
-    public void firstLadySingleRoutine(Stats stats) throws FlListNotFound {
-        Frame.updateCurrentBot(BotType.FL);
+    public void doRoutine() throws FlListNotFound {
         GameWindowManager.focusWindow(GameWindowManager.findGameWindow());
 
         int attempts = 5;
+        boolean isOnMainPage = getOnMainPage(attempts);
+        boolean isOnProfilePage = false;
+
+        if (isOnMainPage) {
+            isOnProfilePage = getOnProfilePage();
+
+            if (isOnProfilePage) {
+                doVPRoutine();
+            }
+        }
+    }
+
+    private void doVPRoutine() {
+    }
+
+    private boolean getOnProfilePage() {
+        clickOnLastDetectedIconPosition();
+        ThreadUtil.pause(2000);
+
+        if (isProfilePage()) {
+            clickOnLastDetectedIconPosition();
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean getOnMainPage(int attempts) {
         boolean isOnMainPage = false;
 
         for (int i = 0; i < attempts; i++) {
             if (hasCloseIcon()) {
                 clickOnLastDetectedIconPosition();
-                Utils.pause(2000);
+                ThreadUtil.pause(2000);
+            }
+
+            if (hasBackIcon()) {
+                clickOnLastDetectedIconPosition();
+                ThreadUtil.pause(2000);
             }
 
             if (isMainPage()) {
@@ -49,28 +68,21 @@ public class FirstLady {
             }
         }
 
-        if (isOnMainPage) {
-            clickOnLastDetectedIconPosition();
-            Utils.pause(2000);
-
-            if (isProfilePage()) {
-                clickOnLastDetectedIconPosition();
-            }
-        }
+        return isOnMainPage;
     }
 
     private void clickOnLastDetectedIconPosition() {
         WinDef.RECT rect = GameWindowManager.getInfo();
 
         if (rect == null) {
-            logger.error("Emulator-Fenster nicht gefunden!");
+            logger.error("Emulator-Window not found!");
             return;
         }
 
         int screenX = rect.left + (int) IconPositionDetector.iconPositionX;
         int screenY = rect.top + (int) IconPositionDetector.iconPositionY;
 
-        logger.info("Klicke auf Bildschirmposition (%d, %d)%n", screenX, screenY);
+        logger.info("Click on window position (%d, %d)%n", screenX, screenY);
 
         try {
             GameWindowManager.clickAt(screenX, screenY);
@@ -124,24 +136,18 @@ public class FirstLady {
         return hasIcon;
     }
 
-    public Mouse getMouseFl() {
-        return mouseFl;
-    }
+    private boolean hasBackIcon() {
+        logger.info("Back icon detection");
+        Screen.getInstance(BotType.FL).takeScreenShot("back-icon-check");
 
-    public void setMouseFl(Mouse mouseFl) {
-        this.mouseFl = mouseFl;
-    }
+        boolean hasIcon = isIconOnScreenshot(DEBUG_SCREEN_PATH + "back-icon-check.png",
+                "src/main/resources/images/back-icon.png",
+                0.7,
+                9999
+        );
 
-    public Screen getScreenFl() {
-        return screenFl;
-    }
+        logger.info("Back icon: " + hasIcon);
 
-    public void setScreenFl(Screen screenFl) {
-        this.screenFl = screenFl;
-    }
-
-    @Override
-    public String toString() {
-        return "FirstLady [mouseFl=" + mouseFl + ", screenFl=" + screenFl + "]";
+        return hasIcon;
     }
 }

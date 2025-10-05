@@ -2,13 +2,9 @@ package com.km.lastwar.vpbot.exception;
 
 public class ScreenIndexException extends Exception {
 
-	public ScreenIndexException(String message) {
-		super(message);
-	}
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+    public ScreenIndexException(String message) {
+        super(message);
+    }
 }

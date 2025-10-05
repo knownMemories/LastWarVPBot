@@ -1,7 +1,5 @@
 package com.km.lastwar.vpbot.utils;
 
-import com.km.lastwar.vpbot.data.BotType;
-import com.km.lastwar.vpbot.data.Context;
 import ch.qos.logback.classic.Logger;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
