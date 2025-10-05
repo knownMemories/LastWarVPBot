@@ -14,13 +14,12 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.stream.Collectors;
 
 import com.km.lastwar.vpbot.image.Image;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Logger;
 
 public class FileManager {
 
-	private static Logger logger = (Logger) LoggerFactory.getLogger("FileManager");
+	private static Logger logger = LoggerFactory.getLogger(FileManager.class);
 
 	public static void createDirectoryIfNotExists(String relativePath) {
 		File directory = new File(relativePath);

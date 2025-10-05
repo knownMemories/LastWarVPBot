@@ -1,14 +1,17 @@
 package com.km.lastwar.vpbot.routine;
 
 import com.km.lastwar.vpbot.exception.FlListNotFound;
+import com.km.lastwar.vpbot.exception.GameWindowNotFoundException;
 import com.km.lastwar.vpbot.utils.GameWindowManager;
 import com.km.lastwar.vpbot.utils.IconPositionDetector;
+import com.km.lastwar.vpbot.utils.ScreenshotUtil;
 import com.km.lastwar.vpbot.utils.ThreadUtil;
 import com.sun.jna.platform.win32.WinDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.io.IOException;
 
 import static com.km.lastwar.vpbot.data.Constants.DEBUG_SCREEN_PATH;
 import static com.km.lastwar.vpbot.utils.IconPositionDetector.isIconOnScreenshot;
@@ -21,22 +24,33 @@ public class VicePresidentRoutine {
         GameWindowManager.focusWindow(GameWindowManager.findGameWindow());
 
         int attempts = 5;
-        boolean isOnMainPage = getOnMainPage(attempts);
-        boolean isOnProfilePage = false;
+        boolean isOnMainPage = false;
+        try {
+            isOnMainPage = getOnMainPage(attempts);
+            boolean isOnProfilePage = false;
 
-        if (isOnMainPage) {
-            isOnProfilePage = getOnProfilePage();
+            if (isOnMainPage) {
+                isOnProfilePage = getOnProfilePage();
 
-            if (isOnProfilePage) {
-                doVPRoutine();
+                if (isOnProfilePage) {
+                    doVPRoutine();
+                }
             }
+
+            // TODO: let it crash or use logger?
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (GameWindowNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (AWTException e) {
+            throw new RuntimeException(e);
         }
     }
 
     private void doVPRoutine() {
     }
 
-    private boolean getOnProfilePage() {
+    private boolean getOnProfilePage() throws IOException, GameWindowNotFoundException, AWTException {
         clickOnLastDetectedIconPosition();
         ThreadUtil.pause(2000);
 
@@ -48,7 +62,7 @@ public class VicePresidentRoutine {
         return false;
     }
 
-    private boolean getOnMainPage(int attempts) {
+    private boolean getOnMainPage(int attempts) throws IOException, GameWindowNotFoundException, AWTException {
         boolean isOnMainPage = false;
 
         for (int i = 0; i < attempts; i++) {
@@ -91,11 +105,13 @@ public class VicePresidentRoutine {
         }
     }
 
-    private boolean isMainPage() {
+    private boolean isMainPage() throws IOException, AWTException, GameWindowNotFoundException {
         logger.info("Main page detection");
-        Screen.getInstance(BotType.FL).takeScreenShot("main-page-check");
 
-        boolean hasIcon = isIconOnScreenshot(DEBUG_SCREEN_PATH + "main-page-check.png",
+        takeScreenshotFromGameWindow("main-page-check.png");
+
+        boolean hasIcon = isIconOnScreenshot(
+                DEBUG_SCREEN_PATH + "main-page-check.png",
                 "src/main/resources/images/default-profile-pic-color.png",
                 0.9,
                 100
@@ -106,9 +122,27 @@ public class VicePresidentRoutine {
         return hasIcon;
     }
 
-    private boolean isProfilePage() {
+    private void takeScreenshotFromGameWindow(String fileName) throws GameWindowNotFoundException, AWTException, IOException {
+        WinDef.RECT rect = GameWindowManager.getInfo();
+
+        if (rect == null) {
+            throw new GameWindowNotFoundException();
+        }
+
+        ScreenshotUtil.takeScreenshot(
+                rect.left,
+                rect.top,
+                rect.right - rect.left,
+                rect.bottom - rect.top,
+                DEBUG_SCREEN_PATH,
+                fileName
+        );
+    }
+
+    private boolean isProfilePage() throws IOException, GameWindowNotFoundException, AWTException {
         logger.info("Profile page detection");
-        Screen.getInstance(BotType.FL).takeScreenShot("profile-page-check");
+
+        takeScreenshotFromGameWindow("profile-page-check.png");
 
         boolean hasIcon = isIconOnScreenshot(DEBUG_SCREEN_PATH + "profile-page-check.png",
                 "src/main/resources/images/hash-icon.png",
@@ -121,9 +155,10 @@ public class VicePresidentRoutine {
         return hasIcon;
     }
 
-    private boolean hasCloseIcon() {
+    private boolean hasCloseIcon() throws IOException, GameWindowNotFoundException, AWTException {
         logger.info("Close icon detection");
-        Screen.getInstance(BotType.FL).takeScreenShot("close-icon-check");
+
+        takeScreenshotFromGameWindow("close-icon-check.png");
 
         boolean hasIcon = isIconOnScreenshot(DEBUG_SCREEN_PATH + "close-icon-check.png",
                 "src/main/resources/images/close-icon.png",
@@ -136,9 +171,10 @@ public class VicePresidentRoutine {
         return hasIcon;
     }
 
-    private boolean hasBackIcon() {
+    private boolean hasBackIcon() throws IOException, GameWindowNotFoundException, AWTException {
         logger.info("Back icon detection");
-        Screen.getInstance(BotType.FL).takeScreenShot("back-icon-check");
+
+        takeScreenshotFromGameWindow("back-icon-check.png");
 
         boolean hasIcon = isIconOnScreenshot(DEBUG_SCREEN_PATH + "back-icon-check.png",
                 "src/main/resources/images/back-icon.png",

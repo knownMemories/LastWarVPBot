@@ -1,10 +1,8 @@
 package com.km.lastwar.vpbot;
 
 import com.km.lastwar.vpbot.data.Constants;
-import com.km.lastwar.vpbot.data.Stats;
 import com.km.lastwar.vpbot.exception.FlListNotFound;
 import com.km.lastwar.vpbot.routine.VicePresidentRoutine;
-import com.km.lastwar.vpbot.thread.ScheduledLauncher;
 import com.km.lastwar.vpbot.utils.FileManager;
 import com.km.lastwar.vpbot.utils.ProcessManager;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -24,9 +22,6 @@ public class LastWarRunnable {
 
     public void run() {
         init();
-
-        ScheduledLauncher scheduledLauncher = new ScheduledLauncher();
-        scheduledLauncher.autoRestartBot(new Stats());
 
         try {
             vicePresidentRoutine.doRoutine();

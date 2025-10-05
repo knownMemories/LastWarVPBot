@@ -1,15 +1,16 @@
 package com.km.lastwar.vpbot.utils;
 
-import ch.qos.logback.classic.Logger;
+import com.km.lastwar.vpbot.data.GameWindow;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 
 public class GameWindowManager {
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(GameWindowManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(GameWindowManager.class);
     private static final String EMULATOR_NAME = "LDPlayer";
 
     public static WinDef.HWND findGameWindow() {
@@ -40,7 +41,7 @@ public class GameWindowManager {
         return null;
     }
 
-    public static Context findGameCoord(int screenIndex, BotType botType) {
+    public static GameWindow findGameCoord() {
         try {
             WinDef.RECT rect = GameWindowManager.getInfo();
 
@@ -49,13 +50,13 @@ public class GameWindowManager {
 
             while (!gameInitialized) {
                 if (rect == null) {
-                    Utils.pause(10000);
+                    ThreadUtil.pause(10000);
                 } else {
                     gameInitialized = true;
                 }
 
                 if (attempts > 3) {
-                    return new Context(0, 0, 800, 600, screenIndex, botType);
+                    return new GameWindow(0, 0, 800, 600);
                 }
 
                 attempts++;
@@ -64,7 +65,7 @@ public class GameWindowManager {
             int width = rect.right - rect.left;
             int height = rect.bottom - rect.top;
 
-            return new Context(rect.left, rect.top, width, height, screenIndex, botType);
+            return new GameWindow(rect.left, rect.top, width, height);
         } catch (Exception e) {
             e.printStackTrace();
         }
