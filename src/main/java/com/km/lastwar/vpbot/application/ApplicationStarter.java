@@ -21,6 +21,9 @@ public class ApplicationStarter {
     public void start() {
         logger.info("Initializing application...");
         directoryInitializer.init();
+
+        // TODO Check if emulator is ready and game loaded
+
         try {
             vicePresidentUseCase.execute();
         } catch (Exception e) {

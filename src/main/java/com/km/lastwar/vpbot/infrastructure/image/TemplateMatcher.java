@@ -1,5 +1,6 @@
 package com.km.lastwar.vpbot.infrastructure.image;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import nu.pattern.OpenCV;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+@ApplicationScoped
 public class TemplateMatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(TemplateMatcher.class);
