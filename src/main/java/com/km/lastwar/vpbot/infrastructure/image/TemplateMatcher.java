@@ -25,8 +25,8 @@ public class TemplateMatcher {
     }
 
     public MatchResult match(BufferedImage screenshot, BufferedImage template, double threshold) {
+
         try {
-            // Temporäre Dateien für OpenCV (da es nur mit Dateien arbeitet)
             File screenFile = File.createTempFile("screen", ".png");
             File templateFile = File.createTempFile("template", ".png");
             ImageIO.write(screenshot, "png", screenFile);
@@ -55,5 +55,6 @@ public class TemplateMatcher {
     }
 
     public record MatchResult(boolean found, org.opencv.core.Point position, double confidence) {
+
     }
 }

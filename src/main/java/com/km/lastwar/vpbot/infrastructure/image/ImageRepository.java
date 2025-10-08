@@ -19,18 +19,22 @@ public class ImageRepository {
     private static final Logger logger = LoggerFactory.getLogger(ImageRepository.class);
 
     private final Map<String, ImageWrapper> cache = new ConcurrentHashMap<>();
+
     private final AppConfig config;
 
     @Inject
     public ImageRepository(AppConfig config) {
+
         this.config = config;
     }
 
     public ImageWrapper getImage(String resourceName) {
+
         return cache.computeIfAbsent(resourceName, this::loadFromResource);
     }
 
     private ImageWrapper loadFromResource(String resourceName) {
+
         String fullPath = config.getProjectImagesPath() + resourceName;
         try (InputStream is = getClass().getResourceAsStream(fullPath)) {
             if (is == null) {

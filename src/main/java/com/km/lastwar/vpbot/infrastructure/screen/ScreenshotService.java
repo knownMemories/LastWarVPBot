@@ -19,6 +19,7 @@ public class ScreenshotService {
     GameWindowManager gameWindowManager;
 
     public BufferedImage captureGameWindow() throws GameWindowNotFoundException, AWTException {
+
         var rect = gameWindowManager.getWindowRect();
         if (rect == null) throw new GameWindowNotFoundException("Game window not found");
 

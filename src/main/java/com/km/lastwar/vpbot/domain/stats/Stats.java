@@ -41,6 +41,7 @@ public record Stats(
     private static final long serialVersionUID = 1L;
 
     public static Stats initial() {
+
         long start = System.currentTimeMillis();
         Date now = new Date();
         return new Stats(
@@ -50,10 +51,12 @@ public record Stats(
     }
 
     public Stats incrementRecovery() {
+
         return new Stats(start, lastFlAction, flInitialized, countRecovery + 1, countFL, moyenneFl, countFLAdd, countFLKick,
-                countStrat, countSecu, countDev, countScience, countInter, countKickStrat, countKickSecu, countKickDev,
-                countKickScience, countKickInter, countMilitary, countAdmin, countKickMilitary, countKickAdmin, countFLTitle,
-                flTime, nextStratKickCheck, nextSecuKickCheck, nextDevKickCheck, nextScienceKickCheck, nextInterKickCheck,
-                nextMilitaryKickCheck, nextAdminKickCheck, startDateStats);
+                         countStrat, countSecu, countDev, countScience, countInter, countKickStrat, countKickSecu, countKickDev,
+                         countKickScience, countKickInter, countMilitary, countAdmin, countKickMilitary, countKickAdmin, countFLTitle,
+                         flTime, nextStratKickCheck, nextSecuKickCheck, nextDevKickCheck, nextScienceKickCheck, nextInterKickCheck,
+                         nextMilitaryKickCheck, nextAdminKickCheck, startDateStats
+        );
     }
 }

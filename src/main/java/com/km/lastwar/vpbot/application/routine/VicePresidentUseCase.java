@@ -20,14 +20,18 @@ public class VicePresidentUseCase {
 
     @Inject
     GameWindowManager gameWindowManager;
+
     @Inject
     ScreenshotService screenshotService;
+
     @Inject
     ImageRepository imageRepository;
+
     @Inject
     TemplateMatcher templateMatcher;
 
     public void execute() {
+
         try {
             gameWindowManager.focusWindow();
 
@@ -46,6 +50,7 @@ public class VicePresidentUseCase {
     }
 
     private boolean navigateToMainPage(int maxAttempts) throws GameWindowNotFoundException, AWTException {
+
         for (int i = 0; i < maxAttempts; i++) {
             BufferedImage screen = screenshotService.captureGameWindow();
 
@@ -71,32 +76,38 @@ public class VicePresidentUseCase {
     }
 
     private boolean navigateToProfilePage() throws GameWindowNotFoundException, AWTException {
+
         clickOnMatch(screenshotService.captureGameWindow(), "default-profile-pic-color.png");
         pause(2000);
         return isProfilePage(screenshotService.captureGameWindow());
     }
 
     private boolean isMainPage(BufferedImage screen) {
+
         var icon = imageRepository.getImage("default-profile-pic-color.png");
         return templateMatcher.match(screen, icon.image(), 0.9).found();
     }
 
     private boolean isProfilePage(BufferedImage screen) {
+
         var icon = imageRepository.getImage("hash-icon.png");
         return templateMatcher.match(screen, icon.image(), 0.5).found();
     }
 
     private boolean isCloseIconVisible(BufferedImage screen) {
+
         var icon = imageRepository.getImage("close-icon.png");
         return templateMatcher.match(screen, icon.image(), 0.7).found();
     }
 
     private boolean isBackIconVisible(BufferedImage screen) {
+
         var icon = imageRepository.getImage("back-icon.png");
         return templateMatcher.match(screen, icon.image(), 0.7).found();
     }
 
     private void clickOnMatch(BufferedImage screen, String iconName) throws GameWindowNotFoundException, AWTException {
+
         var icon = imageRepository.getImage(iconName);
         var result = templateMatcher.match(screen, icon.image(), 0.7);
         if (result.found()) {
@@ -109,11 +120,13 @@ public class VicePresidentUseCase {
     }
 
     private void performVPRoutine() {
+
         logger.info("Performing VP routine...");
 
     }
 
     private void pause(int ms) {
+
         try {
             Thread.sleep(ms);
         } catch (InterruptedException e) {

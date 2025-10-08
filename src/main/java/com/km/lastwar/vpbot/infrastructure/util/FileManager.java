@@ -15,6 +15,7 @@ public class FileManager {
     private static final Logger logger = LoggerFactory.getLogger(FileManager.class);
 
     public static void createDirectoryIfNotExists(String path) {
+
         File dir = new File(path);
         if (!dir.exists() && !dir.mkdirs()) {
             logger.error("Failed to create directory: {}", path);
@@ -22,6 +23,7 @@ public class FileManager {
     }
 
     public static void deleteDirectoryContents(Path directory) {
+
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
             for (Path entry : stream) {
                 BasicFileAttributes attrs = Files.readAttributes(entry, BasicFileAttributes.class);

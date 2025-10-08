@@ -14,22 +14,26 @@ import java.awt.event.InputEvent;
 public class GameWindowManager {
 
     private static final Logger logger = LoggerFactory.getLogger(GameWindowManager.class);
+
     private static final String EMULATOR_NAME = "LDPlayer";
 
     public WinDef.RECT getWindowRect() {
+
         WinDef.HWND hwnd = User32.INSTANCE.FindWindow(null, EMULATOR_NAME);
         if (hwnd == null) return null;
 
         WinDef.RECT rect = new WinDef.RECT();
         if (User32.INSTANCE.GetWindowRect(hwnd, rect)) {
             logger.debug("Window found: x={}, y={}, w={}, h={}",
-                    rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+                         rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top
+                        );
             return rect;
         }
         return null;
     }
 
     public void focusWindow() throws GameWindowNotFoundException {
+
         WinDef.HWND hwnd = User32.INSTANCE.FindWindow(null, EMULATOR_NAME);
         if (hwnd == null) throw new GameWindowNotFoundException("LDPlayer window not found");
         User32.INSTANCE.ShowWindow(hwnd, User32.SW_RESTORE);
@@ -37,6 +41,7 @@ public class GameWindowManager {
     }
 
     public void clickAt(int x, int y) throws AWTException {
+
         Robot robot = new Robot();
         robot.mouseMove(x, y);
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);

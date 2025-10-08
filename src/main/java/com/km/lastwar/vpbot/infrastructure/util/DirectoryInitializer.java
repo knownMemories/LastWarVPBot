@@ -21,11 +21,13 @@ public class DirectoryInitializer {
     ProcessManager processManager;
 
     public void init() {
+
         createAndClearDirectories();
         processManager.startVPProcess();
     }
 
     private void createAndClearDirectories() {
+
         String debugPath = config.getDebugScreenPath();
         FileManager.createDirectoryIfNotExists(debugPath);
         FileManager.deleteDirectoryContents(Paths.get(debugPath));

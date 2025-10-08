@@ -19,6 +19,7 @@ public class ApplicationStarter {
     DirectoryInitializer directoryInitializer;
 
     public void start() {
+
         logger.info("Initializing application...");
         directoryInitializer.init();
 
