@@ -5,6 +5,7 @@ import com.km.lastwar.vpbot.infrastructure.image.ImageRepository;
 import com.km.lastwar.vpbot.infrastructure.image.TemplateMatcher;
 import com.km.lastwar.vpbot.infrastructure.process.GameWindowManager;
 import com.km.lastwar.vpbot.infrastructure.screen.ScreenshotService;
+import com.km.lastwar.vpbot.infrastructure.util.ThreadManipulator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -56,13 +57,13 @@ public class VicePresidentUseCase {
 
             if (isCloseIconVisible(screen)) {
                 clickOnMatch(screen, "close-icon.png");
-                pause(2000);
+                ThreadManipulator.pause(2000);
                 continue;
             }
 
             if (isBackIconVisible(screen)) {
                 clickOnMatch(screen, "back-icon.png");
-                pause(2000);
+                ThreadManipulator.pause(2000);
                 continue;
             }
 
@@ -70,7 +71,7 @@ public class VicePresidentUseCase {
                 return true;
             }
 
-            pause(2000);
+            ThreadManipulator.pause(2000);
         }
         return false;
     }
@@ -78,7 +79,7 @@ public class VicePresidentUseCase {
     private boolean navigateToProfilePage() throws GameWindowNotFoundException, AWTException {
 
         clickOnMatch(screenshotService.captureGameWindow(), "default-profile-pic-color.png");
-        pause(2000);
+        ThreadManipulator.pause(2000);
         return isProfilePage(screenshotService.captureGameWindow());
     }
 
@@ -106,7 +107,7 @@ public class VicePresidentUseCase {
         return templateMatcher.match(screen, icon.image(), 0.7).found();
     }
 
-    private void clickOnMatch(BufferedImage screen, String iconName) throws GameWindowNotFoundException, AWTException {
+    private void clickOnMatch(BufferedImage screen, String iconName) throws AWTException {
 
         var icon = imageRepository.getImage(iconName);
         var result = templateMatcher.match(screen, icon.image(), 0.7);
@@ -123,15 +124,5 @@ public class VicePresidentUseCase {
 
         logger.info("Performing VP routine...");
 
-    }
-
-    private void pause(int ms) {
-
-        try {
-            Thread.sleep(ms);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        }
     }
 }
