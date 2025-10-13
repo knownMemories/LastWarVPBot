@@ -14,6 +14,7 @@ public class LdPlayerDetector implements EmulatorDetector {
 
     @Override
     public EmulatorStatus detectStatus() {
+
         String output = adbExecutor.execute("devices");
 
         String[] lines = output.split("\\r?\\n");

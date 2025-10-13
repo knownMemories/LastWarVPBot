@@ -2,7 +2,13 @@ package com.km.lastwar.vpbot.constants;
 
 public class GameProcess {
 
-    // TODO we should not hardcoded paths. Move to App GUI instead
+    // TODO we should not use hardcoded paths. Move to App GUI instead
+    public static final String EMULATOR_NAME = "LDPlayer";
+
+    private static final int SHORT_PAUSE_MS = 500;
+
+    private static final int MEDIUM_PAUSE_MS = 2000;
+
     public static String EMU_PROCESS_NAME = "dnconsole.exe";
 
     public static String GAME_PACKAGE_NAME = "com.fun.lastwar.gp";

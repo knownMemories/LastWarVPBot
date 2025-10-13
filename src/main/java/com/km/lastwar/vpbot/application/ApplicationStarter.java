@@ -3,11 +3,9 @@ package com.km.lastwar.vpbot.application;
 import com.km.lastwar.vpbot.application.routine.VicePresidentUseCase;
 import com.km.lastwar.vpbot.constants.GameProcess;
 import com.km.lastwar.vpbot.domain.service.EmulatorMonitoringService;
-import com.km.lastwar.vpbot.infrastructure.AdbCommandExecutor;
-import com.km.lastwar.vpbot.infrastructure.util.AndroidAppActivityChecker;
-import com.km.lastwar.vpbot.infrastructure.util.LdPlayerDetector;
+import com.km.lastwar.vpbot.infrastructure.process.ProcessManager;
+import com.km.lastwar.vpbot.infrastructure.util.DelayUtil;
 import com.km.lastwar.vpbot.infrastructure.util.DirectoryInitializer;
-import com.km.lastwar.vpbot.infrastructure.util.ThreadManipulator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -30,19 +28,15 @@ public class ApplicationStarter {
     EmulatorMonitoringService emulatorMonitoringService;
 
     @Inject
-    AdbCommandExecutor adbCommandExecutor;
-
-    @Inject
-    LdPlayerDetector ldPlayerDetector;
-
-    @Inject
-    AndroidAppActivityChecker androidAppActivityChecker;
-
+    ProcessManager processManager;
 
     public void start() {
 
         logger.info("Initializing application...");
         directoryInitializer.init();
+
+        processManager.startVPProcess();
+
         waitForEmulatorIsRunningAndGameStarted();
 
         try {
@@ -54,6 +48,7 @@ public class ApplicationStarter {
     }
 
     private void waitForEmulatorIsRunningAndGameStarted() {
+
         for (int i = 0; i < gameCheckAttempts; i++) {
             boolean isRunning = emulatorMonitoringService.isGameRunning(GameProcess.GAME_PACKAGE_NAME);
 
@@ -63,7 +58,7 @@ public class ApplicationStarter {
             }
 
             System.out.println("Game is not running on LDPlayer! Waiting..");
-            ThreadManipulator.pause(3000);
+            DelayUtil.pause(3000);
         }
     }
 }

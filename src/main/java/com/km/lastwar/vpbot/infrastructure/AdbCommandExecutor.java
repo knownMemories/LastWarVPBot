@@ -1,7 +1,7 @@
 package com.km.lastwar.vpbot.infrastructure;
 
 import com.km.lastwar.vpbot.constants.GameProcess;
-import com.km.lastwar.vpbot.infrastructure.util.ThreadManipulator;
+import com.km.lastwar.vpbot.infrastructure.util.DelayUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.io.BufferedReader;
@@ -15,10 +15,11 @@ import java.util.stream.Collectors;
 public class AdbCommandExecutor {
 
     public String execute(String... arguments) {
+
         ProcessBuilder processBuilder = new ProcessBuilder(buildCommand(arguments));
         processBuilder.redirectErrorStream(true);
 
-        ThreadManipulator.pause(5000);
+        DelayUtil.pause(5000);
 
         try {
             Process process = processBuilder.start();
@@ -35,10 +36,12 @@ public class AdbCommandExecutor {
 
                 if (exitCode != 0) {
                     throw new RuntimeException(
-                            String.format("ADB command failed with exit code %d. Command: %s. Output: %s",
-                                          exitCode,
-                                          String.join(" ", buildCommand(arguments)),
-                                          output)
+                            String.format(
+                                    "ADB command failed with exit code %d. Command: %s. Output: %s",
+                                    exitCode,
+                                    String.join(" ", buildCommand(arguments)),
+                                    output
+                                         )
                     );
                 }
 
@@ -51,6 +54,7 @@ public class AdbCommandExecutor {
     }
 
     private String[] buildCommand(String... arguments) {
+
         String[] command = new String[arguments.length + 1];
         command[0] = GameProcess.ADB_EXE_PATH;
         System.arraycopy(arguments, 0, command, 1, arguments.length);

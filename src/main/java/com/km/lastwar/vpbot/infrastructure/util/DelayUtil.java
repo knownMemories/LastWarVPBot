@@ -1,6 +1,7 @@
 package com.km.lastwar.vpbot.infrastructure.util;
 
-public class ThreadManipulator {
+public class DelayUtil {
+
     public static void pause(int ms) {
 
         try {

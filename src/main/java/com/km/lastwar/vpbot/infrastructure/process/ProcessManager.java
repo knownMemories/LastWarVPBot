@@ -1,5 +1,6 @@
 package com.km.lastwar.vpbot.infrastructure.process;
 
+import com.km.lastwar.vpbot.constants.GameProcess;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,18 +12,14 @@ public class ProcessManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessManager.class);
 
-    private static final String EMU_PROCESS_NAME = "dnconsole.exe";
-
-    private static final String BOT_VP_PROCESS = "C:\\LDPlayer\\LDPlayer9\\dnconsole.exe launchex --index 0 --packagename com.fun.lastwar.gp";
-
     public void startVPProcess() {
 
-        executeCommand(BOT_VP_PROCESS);
+        executeCommand(GameProcess.BOT_VP_PROCESS);
     }
 
     public void killVPProcess() {
 
-        killProcess(EMU_PROCESS_NAME);
+        killProcess(GameProcess.EMU_PROCESS_NAME);
     }
 
     private void killProcess(String processName) {
