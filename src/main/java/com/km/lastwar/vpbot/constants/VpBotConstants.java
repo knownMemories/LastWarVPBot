@@ -22,18 +22,22 @@ public final class VpBotConstants {
     public static final String CLOSE_MINISTRY_LIST = "close-ministry-list.png";
 
     // Thresholds
+    public static final double MINISTRY_MATCH_THRESHOLD = 0.59;
+
     public static final double DEFAULT_MATCH_THRESHOLD = 0.7;
 
-    public static final double PROFILE_MATCH_THRESHOLD = 0.9;
+    public static final double PROFILE_MATCH_THRESHOLD = 0.85;
 
     public static final double HASH_MATCH_THRESHOLD = 0.5;
 
     // Delays (ms)
-    public static final int VERY_SHORT_PAUSE_MS = 200;
+    public static final int VERY_SHORT_PAUSE_MS = 250;
 
     public static final int SHORT_PAUSE_MS = 500;
 
     public static final int MEDIUM_PAUSE_MS = 2500;
+
+    public static final int PAUSE_BETWEEN_USER_REQUESTS_MS = 1000;
 
     private VpBotConstants() {
 

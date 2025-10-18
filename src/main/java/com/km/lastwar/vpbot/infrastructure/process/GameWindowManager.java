@@ -2,6 +2,7 @@ package com.km.lastwar.vpbot.infrastructure.process;
 
 import com.km.lastwar.vpbot.constants.GameProcess;
 import com.km.lastwar.vpbot.domain.exception.GameWindowNotFoundException;
+import com.km.lastwar.vpbot.infrastructure.util.DelayUtil;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,9 +24,10 @@ public class GameWindowManager {
 
         WinDef.RECT rect = new WinDef.RECT();
         if (User32.INSTANCE.GetWindowRect(hwnd, rect)) {
-            logger.debug("Window found: x={}, y={}, w={}, h={}",
+            logger.info("Window found: x={}, y={}, w={}, h={}",
                          rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top
                         );
+            DelayUtil.pause(100);
             return rect;
         }
         return null;

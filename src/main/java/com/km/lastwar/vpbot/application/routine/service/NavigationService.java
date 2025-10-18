@@ -59,7 +59,7 @@ public class NavigationService {
                 return true;
             }
 
-            DelayUtil.pause(MEDIUM_PAUSE_MS);
+            DelayUtil.pause(SHORT_PAUSE_MS);
         }
 
         return false;
@@ -111,12 +111,13 @@ public class NavigationService {
     private boolean isBackIconVisible(BufferedImage screen) {
 
         var icon = imageRepository.getImage(BACK_ICON);
-        return templateMatcher.match(screen, icon.image(), DEFAULT_MATCH_THRESHOLD).found();
+        return templateMatcher.match(screen, icon.image(), 0.8).found();
     }
 
     private void clickProfileIcon() throws AWTException, GameWindowNotFoundException {
 
-        clickService.clickIfFound(PROFILE_PIC_ICON, DEFAULT_MATCH_THRESHOLD, 0, 0);
+        clickService.clickOnCoord(50, 50);
+//        clickService.clickIfFound(PROFILE_PIC_ICON, DEFAULT_MATCH_THRESHOLD, 0, 0);
     }
 
     private void clickHashIcon() throws AWTException, GameWindowNotFoundException {

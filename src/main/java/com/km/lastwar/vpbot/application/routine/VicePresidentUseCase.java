@@ -19,10 +19,13 @@ import java.awt.image.BufferedImage;
 
 import static com.km.lastwar.vpbot.constants.VpBotConstants.ACCEPT_ICON;
 import static com.km.lastwar.vpbot.constants.VpBotConstants.CLOSE_MINISTRY_LIST;
+import static com.km.lastwar.vpbot.constants.VpBotConstants.MINISTRY_MATCH_THRESHOLD;
 import static com.km.lastwar.vpbot.constants.VpBotConstants.DEFAULT_MATCH_THRESHOLD;
 import static com.km.lastwar.vpbot.constants.VpBotConstants.EXCLAMATION_ICON;
 import static com.km.lastwar.vpbot.constants.VpBotConstants.LIST_ICON;
 import static com.km.lastwar.vpbot.constants.VpBotConstants.MEDIUM_PAUSE_MS;
+import static com.km.lastwar.vpbot.constants.VpBotConstants.PAUSE_BETWEEN_USER_REQUESTS_MS;
+import static com.km.lastwar.vpbot.constants.VpBotConstants.SHORT_PAUSE_MS;
 import static com.km.lastwar.vpbot.constants.VpBotConstants.VERY_SHORT_PAUSE_MS;
 
 @ApplicationScoped
@@ -58,14 +61,16 @@ public class VicePresidentUseCase {
         try {
             gameWindowManager.focusWindow();
 
-            if (!navigation.navigateToMainPage(40)) {
-                throw new IllegalStateException("Failed to reach main page");
-            }
-            if (!navigation.navigateToProfilePage()) {
-                throw new IllegalStateException("Failed to reach profile page");
-            }
-            if (!navigation.navigateToVicePresidentPage()) {
-                throw new IllegalStateException("Failed to reach VP (Ministry) page");
+            for (int i = 0; i < 20; i++) {
+                if (navigation.navigateToMainPage(40)) {
+                    if (!navigation.navigateToProfilePage()) {
+                        continue;
+                    }
+
+                    if (navigation.navigateToVicePresidentPage()) {
+                        break;
+                    }
+                }
             }
 
             performVPRoutine();
@@ -79,7 +84,8 @@ public class VicePresidentUseCase {
     private void performVPRoutine() throws GameWindowNotFoundException, AWTException {
 
         logger.info("Performing VP routine...");
-        while (navigation.isOnMinistryPage()) {
+//        while (navigation.isOnMinistryPage()) {
+        while (true) {
             if (botControl.shouldStop()) {
                 logger.info("Stopping VP routine due to user request (ESC).");
                 return;
@@ -96,43 +102,45 @@ public class VicePresidentUseCase {
 
     private void processMinistryRequests() throws GameWindowNotFoundException, AWTException {
         // Open ministry page with user requests
-        if (isItemVisible(EXCLAMATION_ICON, DEFAULT_MATCH_THRESHOLD)) {
-            clicker.clickIfFound(EXCLAMATION_ICON, DEFAULT_MATCH_THRESHOLD, 100, 100);
+        if (clicker.clickIfFound(EXCLAMATION_ICON, MINISTRY_MATCH_THRESHOLD, 20, 20)) {
+            logger.info("#### User request found!");
             DelayUtil.pause(VERY_SHORT_PAUSE_MS);
 
             // open list
-            clicker.clickIfFound(LIST_ICON, DEFAULT_MATCH_THRESHOLD, 15, 15);
+            logger.info("Open request list.");
+            clicker.clickIfFound(LIST_ICON, MINISTRY_MATCH_THRESHOLD, 5, 5);
             DelayUtil.pause(VERY_SHORT_PAUSE_MS);
 
             // accept all
+            logger.info("Trying to accept all applications!");
             acceptAllPending();
 
             // go back to ministry page
-            clicker.clickIfFound(CLOSE_MINISTRY_LIST, 0.75, 10, 10);
+            logger.info("Going back to ministry page.");
+            clicker.clickIfFound(CLOSE_MINISTRY_LIST, 0.67, 5, 5);
             DelayUtil.pause(VERY_SHORT_PAUSE_MS);
-
-            clicker.clickIfFound(CLOSE_MINISTRY_LIST, 0.75, 10, 10);
+            clicker.clickIfFound(CLOSE_MINISTRY_LIST, 0.67, 5, 5);
         } else {
             logger.info("No user request found!");
         }
 
-        DelayUtil.pause(MEDIUM_PAUSE_MS);
+        DelayUtil.pause(PAUSE_BETWEEN_USER_REQUESTS_MS);
     }
 
     private void acceptAllPending() throws GameWindowNotFoundException, AWTException {
 
-        while (isItemVisible(ACCEPT_ICON, DEFAULT_MATCH_THRESHOLD)) {
+        while (isItemVisible(ACCEPT_ICON, 0.55)) {
             if (botControl.shouldStop()) {
                 logger.info("Stopping accept loop due to user request (ESC).");
                 return;
             }
 
             if (botControl.isPaused()) {
-                DelayUtil.pause(VERY_SHORT_PAUSE_MS);
+                DelayUtil.pause(MEDIUM_PAUSE_MS);
                 continue;
             }
 
-            clicker.clickIfFound(ACCEPT_ICON, DEFAULT_MATCH_THRESHOLD, 15, 15);
+            clicker.clickOnTopmostIfFound(ACCEPT_ICON, 0.55, 15, 15);
             DelayUtil.pause(VERY_SHORT_PAUSE_MS);
         }
     }
@@ -141,6 +149,7 @@ public class VicePresidentUseCase {
 
         BufferedImage screen = screenshotService.captureGameWindow();
         var icon = imageRepository.getImage(iconPath);
-        return templateMatcher.match(screen, icon.image(), threshold).found();
+        TemplateMatcher.MatchResult match = templateMatcher.match(screen, icon.image(), threshold);
+        return match.found();
     }
 }

@@ -31,18 +31,18 @@ public class BotControlService implements NativeKeyListener, NativeMouseListener
         java.util.logging.Logger.getLogger(GlobalScreen.class.getPackage().getName())
                 .setLevel(Level.OFF);
 
-        try {
-            GlobalScreen.registerNativeHook();
-            GlobalScreen.addNativeKeyListener(this);
-
-            // Disable mouse listener
-            GlobalScreen.addNativeMouseListener(this);
-            GlobalScreen.addNativeMouseMotionListener(this);
-
-            logger.info("Global hook registered");
-        } catch (NativeHookException e) {
-            logger.error("Failed to register global hook", e);
-        }
+//        try {
+//            GlobalScreen.registerNativeHook();
+//            GlobalScreen.addNativeKeyListener(this);
+//
+//            // Disable mouse listener
+//            GlobalScreen.addNativeMouseListener(this);
+//            GlobalScreen.addNativeMouseMotionListener(this);
+//
+//            logger.info("Global hook registered");
+//        } catch (NativeHookException e) {
+//            logger.error("Failed to register global hook", e);
+//        }
     }
 
     @PreDestroy
